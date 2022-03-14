@@ -3,7 +3,7 @@ from tkinter import ttk
 from PIL import ImageTk, Image
 import math
 import turtle
-
+#test
 
 def alpha(c,a,b):
     arg=((b**2+c**2-a**2)/(2*b*c))
