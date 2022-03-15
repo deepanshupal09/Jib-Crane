@@ -1,9 +1,27 @@
 from tkinter import *
 from tkinter import ttk
 from PIL import ImageTk, Image
+
+
 import math
 import turtle
-#test
+
+class HoverButton(Button):
+    def __init__(self, master, **kw):
+        Button.__init__(self,master=master,**kw)
+        self.defaultBackground = self["background"]
+        self.defaultForeground = self["foreground"]
+        self.bind("<Enter>", self.on_enter)
+        self.bind("<Leave>", self.on_leave)
+
+    def on_enter(self, e):
+        self['background'] = self['activebackground']
+        self['foreground'] = self['activeforeground']
+
+    def on_leave(self, e):
+        self['background'] = self.defaultBackground
+        self['foreground'] = self.defaultForeground
+
 
 def alpha(c,a,b):
     arg=((b**2+c**2-a**2)/(2*b*c))
@@ -21,6 +39,7 @@ def gamma(c,a,b):
     C=math.degrees(C)
     return C
 def turtle_diagram():
+    turtle.speed(100000)
     turtle.hideturtle()
     turtle.left(90)
     turtle.penup()
@@ -68,8 +87,11 @@ def calc():
     perc_tie = ((tie_obs - Ten_Trunc) / Ten_Trunc) * 100
     perc_jib = ((jib_obs - Comp_Trunc) / Comp_Trunc) * 100
 
-    perc_error_jib.configure(text=("Percentage Error Jib: " + str(perc_jib)))
-    perc_error_tie.configure(text=("Percentage Error Tie: " + str(perc_tie)))
+    perc_tie = round(perc_tie,3)
+    perc_jib = round(perc_jib, 3)
+
+    perc_error_jib.configure(text=(f"Percentage Error Jib: {perc_jib}%"))
+    perc_error_tie.configure(text=(f"Percentage Error Tie: {perc_tie}%" ))
 
     compr_calc.configure(text=("Compression calculated: " + str(Comp_Trunc)))
     tens_calc.configure(text=("Tension calculated: " + str(Ten_Trunc)))
@@ -111,14 +133,17 @@ def show_table():
     obs_table = Toplevel(main_win)
     obs_table.title('Observation Table')
     obs_table.geometry("800x600")
+    obs_table.configure(background='white')
 
-    
+    obs_heading = Label(obs_table, text="Observation Table", font=('Helvatical bold',20), background='white', foreground='blue', anchor=CENTER)
+    obs_heading.grid(row=0, column=0)
 
 
 
 main_win = Tk()
 main_win.geometry("1024x768")
 main_win.title('Jib Crane Experiment')
+main_win.configure(background='white')
 main_win.resizable = True
 
 #main_frame = ttk.Frame(main_win, padding=10)
@@ -142,64 +167,100 @@ ze_compression = Entry(main_win, selectbackground="red", font='30', width=8)
 ze_compression_label = ttk.Label(main_win, text="Zero error of compression spring balance", font=('Helvatical bold',13))
 
 initial_tie = Entry(main_win, selectbackground="red", font='30', width=8)
-initial_tie_label = ttk.Label(main_win, text="Initial length of tie (cm)", font='40')
+initial_tie_label = ttk.Label(main_win, text="Initial length of tie (cm)",  font=('Helvatical bold',13))
 
-initial_jib = Entry(main_win, selectbackground="red", font='30', width=8)
-initial_jib_label = ttk.Label(main_win, text="Initial length of jib (cm)", font='40')
+initial_jib = Entry(main_win, selectbackground="red",  font=('Helvatical bold',13), width=8)
+initial_jib_label = ttk.Label(main_win, text="Initial length of jib (cm)",  font=('Helvatical bold',13))
 
-post = Entry(main_win, selectbackground="red", font='30', width=8)
-post_label = ttk.Label(main_win, text="Length of post (cm)", font='40')
+post = Entry(main_win, selectbackground="red",  font=('Helvatical bold',13), width=8)
+post_label = ttk.Label(main_win, text="Length of post (cm)",  font=('Helvatical bold',13))
 
-ze_compression = Entry(main_win, selectbackground="red", font='30', width=8)
-ze_compression_label = ttk.Label(main_win, text="Zero error of compression spring balance", font='40')
+ze_compression = Entry(main_win, selectbackground="red",  font=('Helvatical bold',13), width=8)
+ze_compression_label = ttk.Label(main_win, text="Zero error of compression spring balance",  font=('Helvatical bold',13))
 
-weight = Entry(main_win, selectbackground="red", font='30', width=8, background='#F0F0F0')
+weight = Entry(main_win, selectbackground="red",  font=('Helvatical bold',13), width=8, background='white')
 weight_label = Label(main_win, text="Weight", background='white')
 
-len_AB = Entry(main_win, selectbackground="red", background="#F0F0F0", font='30', width=8)
+len_AB = Entry(main_win, selectbackground="red", background="white",  font=('Helvatical bold',13), width=8)
 len_AB_label = Label(main_win, text="Final Jib Length", background='white')
 
-len_AC = Entry(main_win, selectbackground="red", font="30", width=8, background="#F0F0F0")
+len_AC = Entry(main_win, selectbackground="red", font="30", width=8, background="white")
 len_AC_label = Label(main_win, text="Final Tie Length", background='white')
 
-perc_error_tie = Label(main_win, text="Percentage Error Tie: ", font='30')
-perc_error_jib = Label(main_win, text="Percentage Error Jib: ", font='30')
+perc_error_tie = Label(main_win, text="Percentage Error Tie: ",  font=('Helvatical bold',13))
+perc_error_jib = Label(main_win, text="Percentage Error Jib: ",  font=('Helvatical bold',13))
 
-compr_calc = Label(main_win, text="Compression calculated: ", font='30')
-tens_calc = Label(main_win, text="Tension calculated: ", font='30')
+compr_calc = Label(main_win, text="Compression calculated: ",  font=('Helvatical bold',13))
+tens_calc = Label(main_win, text="Tension calculated: ",  font=('Helvatical bold',13))
 
-final_tie_reading_label = Label(main_win, text="Final reading of tie(kgf)", font='30')
-final_tie_reading = Entry(main_win,selectbackground='red', font='30', width=8)
+final_tie_reading_label = Label(main_win, text="Final reading of tie(kgf)",  font=('Helvatical bold',13))
+final_tie_reading = Entry(main_win,selectbackground='red',  font=('Helvatical bold',13), width=8)
 
-final_jib_reading_label = Label(main_win, text="Final reading of jib(kgf)", font='30')
-final_jib_reading = Entry(main_win, selectbackground='red', font='30', width=8)
+final_jib_reading_label = Label(main_win, text="Final reading of jib(kgf)",  font=('Helvatical bold',13))
+final_jib_reading = Entry(main_win, selectbackground='red',  font=('Helvatical bold',13), width=8)
 
 
-calculate_button = Button(main_win, padx=10, pady=10, font='20', background='white', text='Calculate', command=calc)
-clear_button = Button(main_win, padx=10, pady=10, font='20', background='white', text='Clear', command=clear)
-reset_button = Button(main_win, padx=10, pady=10, font='20', background='white', text="reset", command=reset)
+calculate_button = HoverButton(main_win, padx=10, pady=10,  font=('Helvatical bold',13), background='white', foreground='#1EC600', text='Calculate', command=calc, activeforeground='white', activebackground='#1EC600')
+clear_button = HoverButton(main_win, padx=10, pady=10, font=('Helvatical bold',13), background='white', foreground='red', text='Clear', command=clear, activeforeground='white', activebackground='red')
+reset_button = HoverButton(main_win, padx=10, pady=10, font=('Helvatical bold',13), background='white', foreground='red', text="reset", command=reset, activeforeground='white', activebackground='red')
 
-obs_btn = Button(main_win, padx=10, pady=10, font='20', background='white', text="Show observation table", command=show_table)
+obs_btn = HoverButton(main_win, padx=10, pady=10, font=('Helvatical bold',13), background='white', foreground='#F06000', text="Show observation table", command=show_table, activeforeground='white',activebackground='#F06000')
+
 
 #ze_tension_label.grid(row=2, column=0)
 #ze_tension.grid(row=1, column=1)
 
+main_heading.configure(background='white')
+
+jib_crane_img.configure(background='white', borderwidth=0, highlightthickness=0)
+
+ze_tension.configure(background='white')
+ze_tension_label.configure(background='white', foreground='blue')
+
+ze_compression.configure(background='white')
+ze_compression_label.configure(background='white', foreground='blue')
+
+initial_tie.configure(background='white')
+initial_tie_label.configure(background='white', foreground='blue')
+
+initial_jib.configure(background='white')
+initial_jib_label.configure(background='white', foreground='blue')
+
+post.configure(background='white')
+post_label.configure(background='white', foreground='blue')
+
+perc_error_jib.configure(background='white', foreground='blue')
+perc_error_tie.configure(background='white', foreground='blue')
+
+tens_calc.configure(background='white', foreground='blue')
+compr_calc.configure(background='white', foreground='blue')
+
+final_tie_reading.configure(background='white', foreground='blue')
+final_tie_reading_label.configure(background='white', foreground='blue')
+
+final_jib_reading.configure(background='white', foreground='blue')
+final_jib_reading_label.configure(background='white', foreground='blue')
+
+'''Placing elements'''
 main_heading.place(x=350, y=50)
 jib_crane_img.place(x=270, y=100)
 
-ze_tension.place(x=300, y=500)
+ze_tension.place(x=310, y=500)
 ze_tension_label.place(x=30, y=500)
 
-ze_compression.place(x=330, y=530)
 ze_compression_label.place(x=30, y=530)
+ze_compression.place(x=340, y=530)
 
-initial_tie.place(x=200, y=560)
+initial_tie.place(x=210, y=560)
 initial_tie_label.place(x=30, y=560)
 
-initial_jib.place(x=200, y=590)
+initial_jib.place(x=210, y=590)
 initial_jib_label.place(x=30, y=590)
+#
+# initial_tie.place(x=200, y=560)
+# initial_tie_label.place(x=30, y=560)
 
-post.place(x=200, y=620)
+post.place(x=210, y=620)
 post_label.place(x=30, y=620)
 
 weight.place(x=670, y=350)
@@ -218,16 +279,17 @@ compr_calc.place(x=550, y = 520)
 tens_calc.place(x=550, y = 550)
 
 final_tie_reading_label.place(x=30, y=650)
-final_tie_reading.place(x=200, y=650)
+final_tie_reading.place(x=210, y=650)
 
 final_jib_reading_label.place(x=30, y=680)
-final_jib_reading.place(x=200, y=680)
+final_jib_reading.place(x=210, y=680)
 
 calculate_button.place(x=550,y=650)
 clear_button.place(x=660, y=650)
 reset_button.place(x=740, y=650)
+obs_btn.place(x=580, y = 705)
 
-obs_btn.place(x=580, y = 700)
+
 
 #main_heading.pack()
 #main_frame.pack()
