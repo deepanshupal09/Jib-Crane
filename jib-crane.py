@@ -147,8 +147,8 @@ main_win.configure(background='white')
 main_win.resizable = True
 
 #main_frame = ttk.Frame(main_win, padding=10)
-main_heading = ttk.Label(main_win, text="Jib Crane Experiment", )
-main_heading.configure( font=('Helvatical bold',30), padding=0)
+main_heading =Label(main_win, text="Jib Crane Experiment", )
+main_heading.configure(font=('Helvatical bold',30))
 
 jib_crane_img = Canvas(main_win, height=600, width=500)
 img = ImageTk.PhotoImage(Image.open('jib_crane.jpg'))
@@ -160,31 +160,31 @@ jib_crane_img.create_image(10, 10, anchor=NW, image=img)
 #btn.grid(row=1)
 #btn.config(background='white', font='30', padx=10, pady=10)
 
-ze_tension = Entry(main_win, selectbackground="red", font='30', width=8)
-ze_tension_label = ttk.Label(main_win, text="Zero error of tension spring balance", font=('Helvatical bold',13))
+ze_tension = Entry(main_win, selectbackground="red", font='30', width=8,highlightthickness=0)
+ze_tension_label = Label(main_win, text="Zero error of tension spring balance", font=('Helvatical bold',13))
 
-ze_compression = Entry(main_win, selectbackground="red", font='30', width=8)
-ze_compression_label = ttk.Label(main_win, text="Zero error of compression spring balance", font=('Helvatical bold',13))
+ze_compression = Entry(main_win, selectbackground="red", font='30', width=8,highlightthickness=0)
+ze_compression_label = Label(main_win, text="Zero error of compression spring balance", font=('Helvatical bold',13))
 
-initial_tie = Entry(main_win, selectbackground="red", font='30', width=8)
-initial_tie_label = ttk.Label(main_win, text="Initial length of tie (cm)",  font=('Helvatical bold',13))
+initial_tie = Entry(main_win, selectbackground="red", font='30', width=8,highlightthickness=0)
+initial_tie_label =Label(main_win, text="Initial length of tie (cm)",  font=('Helvatical bold',13))
 
-initial_jib = Entry(main_win, selectbackground="red",  font=('Helvatical bold',13), width=8)
-initial_jib_label = ttk.Label(main_win, text="Initial length of jib (cm)",  font=('Helvatical bold',13))
+initial_jib = Entry(main_win, selectbackground="red",  font=('Helvatical bold',13), width=8,highlightthickness=0)
+initial_jib_label = Label(main_win, text="Initial length of jib (cm)",  font=('Helvatical bold',13))
 
-post = Entry(main_win, selectbackground="red",  font=('Helvatical bold',13), width=8)
-post_label = ttk.Label(main_win, text="Length of post (cm)",  font=('Helvatical bold',13))
+post = Entry(main_win, selectbackground="red",  font=('Helvatical bold',13), width=8,highlightthickness=0)
+post_label = Label(main_win, text="Length of post (cm)",  font=('Helvatical bold',13))
 
-ze_compression = Entry(main_win, selectbackground="red",  font=('Helvatical bold',13), width=8)
-ze_compression_label = ttk.Label(main_win, text="Zero error of compression spring balance",  font=('Helvatical bold',13))
+ze_compression = Entry(main_win, selectbackground="red",  font=('Helvatical bold',13), width=8,highlightthickness=0)
+ze_compression_label = Label(main_win, text="Zero error of compression spring balance",  font=('Helvatical bold',13))
 
-weight = Entry(main_win, selectbackground="red",  font=('Helvatical bold',13), width=8, background='white')
+weight = Entry(main_win, selectbackground="red",  font=('Helvatical bold',13), width=8, background='white',highlightthickness=0)
 weight_label = Label(main_win, text="Weight", background='white')
 
-len_AB = Entry(main_win, selectbackground="red", background="white",  font=('Helvatical bold',13), width=8)
+len_AB = Entry(main_win, selectbackground="red", background="white",  font=('Helvatical bold',13), width=8,highlightthickness=0)
 len_AB_label = Label(main_win, text="Final Jib Length", background='white')
 
-len_AC = Entry(main_win, selectbackground="red", font="30", width=8, background="white")
+len_AC = Entry(main_win, selectbackground="red", font="30", width=8, background="white",highlightthickness=0)
 len_AC_label = Label(main_win, text="Final Tie Length", background='white')
 
 perc_error_tie = Label(main_win, text="Percentage Error Tie: ",  font=('Helvatical bold',13))
@@ -194,17 +194,17 @@ compr_calc = Label(main_win, text="Compression calculated: ",  font=('Helvatical
 tens_calc = Label(main_win, text="Tension calculated: ",  font=('Helvatical bold',13))
 
 final_tie_reading_label = Label(main_win, text="Final reading of tie(kgf)",  font=('Helvatical bold',13))
-final_tie_reading = Entry(main_win,selectbackground='red',  font=('Helvatical bold',13), width=8)
+final_tie_reading = Entry(main_win,selectbackground='red',  font=('Helvatical bold',13), width=8,highlightthickness=0)
 
 final_jib_reading_label = Label(main_win, text="Final reading of jib(kgf)",  font=('Helvatical bold',13))
-final_jib_reading = Entry(main_win, selectbackground='red',  font=('Helvatical bold',13), width=8)
+final_jib_reading = Entry(main_win, selectbackground='red',  font=('Helvatical bold',13), width=8,highlightthickness=0)
 
 
-calculate_button = HoverButton(main_win, padx=10, pady=10,  font=('Helvatical bold',13), background='white', foreground='#1EC600', text='Calculate', command=calc, activeforeground='white', activebackground='#1EC600')
-clear_button = HoverButton(main_win, padx=10, pady=10, font=('Helvatical bold',13), background='white', foreground='red', text='Clear', command=clear, activeforeground='white', activebackground='red')
-reset_button = HoverButton(main_win, padx=10, pady=10, font=('Helvatical bold',13), background='white', foreground='red', text="reset", command=reset, activeforeground='white', activebackground='red')
+calculate_button = HoverButton(main_win, padx=10, pady=10,  font=('Helvatical bold',13), background='white', foreground='#1EC600', text='Calculate', command=calc, activeforeground='white', activebackground='#1EC600',highlightthickness=0,borderwidth=0)
+clear_button = HoverButton(main_win, padx=10, pady=10, font=('Helvatical bold',13), background='white', foreground='red', text='Clear', command=clear, activeforeground='white', activebackground='red',highlightthickness=0,borderwidth=0)
+reset_button = HoverButton(main_win, padx=10, pady=10, font=('Helvatical bold',13), background='white', foreground='red', text="reset", command=reset, activeforeground='white', activebackground='red',highlightthickness=0,borderwidth=0)
 
-obs_btn = HoverButton(main_win, padx=10, pady=10, font=('Helvatical bold',13), background='white', foreground='#F06000', text="Show observation table", command=show_table, activeforeground='white',activebackground='#F06000')
+obs_btn = HoverButton(main_win, padx=10, pady=10, font=('Helvatical bold',13), background='white', foreground='#F06000', text="Show observation table", command=show_table, activeforeground='white',activebackground='#F06000',highlightthickness=0,borderwidth=0)
 
 
 #ze_tension_label.grid(row=2, column=0)
@@ -224,7 +224,7 @@ initial_tie.configure(background='white')
 initial_tie_label.configure(background='white', foreground='blue')
 
 initial_jib.configure(background='white')
-initial_jib_label.configure(background='white', foreground='blue')
+initial_jib_label.configure(background='#ffffff', foreground='blue')
 
 post.configure(background='white')
 post_label.configure(background='white', foreground='blue')
