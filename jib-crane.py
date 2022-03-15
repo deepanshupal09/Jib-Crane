@@ -144,7 +144,6 @@ main_win = Tk()
 main_win.geometry("1024x768")
 main_win.title('Jib Crane Experiment')
 main_win.configure(background='white')
-main_win.resizable = True
 
 #main_frame = ttk.Frame(main_win, padding=10)
 main_heading = ttk.Label(main_win, text="Jib Crane Experiment", )
@@ -288,8 +287,6 @@ calculate_button.place(x=550,y=650)
 clear_button.place(x=660, y=650)
 reset_button.place(x=740, y=650)
 obs_btn.place(x=580, y = 705)
-
-
 
 #main_heading.pack()
 #main_frame.pack()
