@@ -1,11 +1,19 @@
 from tkinter import *
 from tkinter import ttk
 from PIL import ImageTk, Image
+from tkinter import messagebox
 import time
 import csv
 
 import math
 import turtle
+
+
+
+global tree
+global s_no
+
+
 
 class HoverButton(Button):
     def __init__(self, master, **kw):
@@ -60,56 +68,78 @@ def turtle_diagram():
 
 def calc():
 
+
     global AB
     global AC
     global BC
 
-    BC = float(post.get())
-    AB = float(len_AB.get())
-    AC = float(len_AC.get())
+    try:
+        BC = float(post.get())
+        AB = float(len_AB.get())
+        AC = float(len_AC.get())
 
-    a = alpha(AB, BC, AC)
-    b = beta(AB, BC, AC)
-    c = gamma(AB, BC, AC)
+        a = alpha(AB, BC, AC)
+        b = beta(AB, BC, AC)
+        c = gamma(AB, BC, AC)
 
-    Weight = float(weight.get())
+        Weight = float(weight.get())
 
-    ze_t = float(ze_tension.get())
-    ze_c = float(ze_compression.get())
+        ze_t = float(ze_tension.get())
+        ze_c = float(ze_compression.get())
 
-    tie_obs = float(final_tie_reading.get()) - ze_t
-    jib_obs = float(final_jib_reading.get()) - ze_c
+        tie_obs = float(final_tie_reading.get()) - ze_t
+        jib_obs = float(final_jib_reading.get()) - ze_c
 
-    global Comp_Trunc, Ten_Trunc, perc_tie, perc_jib
+        global Comp_Trunc, Ten_Trunc, perc_tie, perc_jib
 
-    Compression=(Weight*math.sin(math.radians(b)))/(math.sin(math.radians(a)))
-    Comp_Trunc = round(Compression, 3)
-    Tension=(Weight*math.sin(math.radians(c)))/(math.sin(math.radians(a)))
-    Ten_Trunc = round(Tension, 3)
+        Compression=(Weight*math.sin(math.radians(b)))/(math.sin(math.radians(a)))
+        Comp_Trunc = round(Compression, 3)
+        Tension=(Weight*math.sin(math.radians(c)))/(math.sin(math.radians(a)))
+        Ten_Trunc = round(Tension, 3)
 
-    perc_tie = ((tie_obs - Ten_Trunc) / Ten_Trunc) * 100
-    perc_jib = ((jib_obs - Comp_Trunc) / Comp_Trunc) * 100
+        perc_tie = ((tie_obs - Ten_Trunc) / Ten_Trunc) * 100
+        perc_jib = ((jib_obs - Comp_Trunc) / Comp_Trunc) * 100
 
-    perc_tie = round(perc_tie,3)
-    perc_jib = round(perc_jib, 3)
+        perc_tie = round(perc_tie,3)
+        perc_jib = round(perc_jib, 3)
 
-    perc_error_jib.configure(text=(f"Percentage Error Jib: {perc_jib}%"))
-    perc_error_tie.configure(text=(f"Percentage Error Tie: {perc_tie}%" ))
+        if abs(perc_tie) < 5:
+            perc_error_tie.configure(fg='green')
+        elif abs(perc_tie) < 10:
+            perc_error_tie.configure(fg='#F06000')
+        else:
+            perc_error_tie.configure(fg='red')
 
-    compr_calc.configure(text=("Compression calculated: " + str(Comp_Trunc)))
-    tens_calc.configure(text=("Tension calculated: " + str(Ten_Trunc)))
+        if abs(perc_jib) < 5:
+            perc_error_jib.configure(fg='green')
+        elif abs(perc_jib) < 10:
+            perc_error_jib.configure(fg='#F06000')
+        else:
+            perc_error_jib.configure(fg='red')
 
-    print(gamma(AB, BC, AC))
-    print(alpha(AB, BC, AC))
-    print(beta(AB, BC, AC))
-    print("")
-    print(Comp_Trunc)
-    print(Ten_Trunc)
-    print(perc_tie)
-    print(perc_jib)
-    turtle_diagram()
-    time.sleep(3)
-    turtle.bye()
+
+
+
+        perc_error_jib.configure(text=(f"Percentage Error Jib: {perc_jib}%"))
+        perc_error_tie.configure(text=(f"Percentage Error Tie: {perc_tie}%" ))
+
+        compr_calc.configure(text=("Compression calculated: " + str(Comp_Trunc)))
+        tens_calc.configure(text=("Tension calculated: " + str(Ten_Trunc)))
+        #
+        # print(gamma(AB, BC, AC))
+        # print(alpha(AB, BC, AC))
+        # print(beta(AB, BC, AC))
+        # print("")
+        # print(Comp_Trunc)
+        # print(Ten_Trunc)
+        # print(perc_tie)
+        # print(perc_jib)
+
+        # turtle_diagram()
+        # time.sleep(3)
+        # turtle.bye()
+    except:
+        messagebox.showerror("ERROR", "Invalid Input")
 
 
 def clear():
@@ -126,11 +156,11 @@ def clear():
 def reset():
     clear()
     initial_tie.delete(0, END)
-    #f = open("obs.csv", "w", newline='\n') # clearing observation table
-    #writer = csv.writer(f)
-    #writer.writerow(["S.No ", 'Weight', 'Initial Tie Length', 'Initial Jib Length', 'Post Length', 'Final Jib length', 'Final Tie Length', 'Calculated Tie Length', 'Calculated Jib Length', 'Percantage Error Jib', "Percentage Error Jib"])
-    #f.close()
-    s_no=1
+    global s_no
+    f = open("obs.csv", "w", newline='') # clearing observation table
+    writer = csv.writer(f)
+    f.close()
+    s_no=0
     for item in tree.get_children():
         tree.delete(item)
     initial_jib.delete(0, END)
@@ -141,64 +171,103 @@ def reset():
 
 def view_table():
 
-    obs_table = Toplevel(main_win)
-    obs_table.title('Observation Table')
-    obs_table.geometry("988x266")
-    obs_table.configure(background='white')
-
-    obs_heading = Label(obs_table, text="Observation Table", font=('Helvatical bold',20), background='white', foreground='blue', anchor=CENTER)
-    obs_heading.grid(row=0, column=0)
-
-    # f = open("obs.csv", "r")
-    # reader = csv.reader(f)
-    #
-    # data = list(reader)
-    # row = len(data)-1
-    # col = 11
-    # for i in range(row):
-    #     for j in range(col):
-    #         e = Entry(obs_table,  width=15, fg='black', font=('Helvatical bold',12))
-    #         e.grid(row=i+1, column= j)
-    #         e.insert(END, data[i][j])
-    #         print(i, end=' ')
-    #     print(j)
-    # f.close()
     global tree
-    columns = ("S.No", 'Weight', 'Initial Tie Length', 'Initial Jib Length', 'Post Length', 'Final Jib Length', 'Final Tie Length',
-                'Calculated Tie Length', 'Calculated Jib Length', 'Percentage Error Jib', "Percentage Error Tie")
-    tree = ttk.Treeview(obs_table, columns=columns, show='headings')
-    tree.heading('S.No', text='S.No')
-    tree.column("S.No", minwidth=0, width=35, stretch=NO)
 
-    tree.heading('Weight', text='Weight')
-    tree.column("Weight", minwidth=0, width=50, stretch=NO)
 
-    tree.heading('Initial Tie Length', text='Initial Tie Length')
-    tree.column("Initial Tie Length", minwidth=0, width=100, stretch=NO)
+    # obs_table.title('Observation Table')
+    # obs_table.geometry("988x266")
+    # obs_table.configure(background='white')
+    #
+    # obs_heading = Label(obs_table, text="Observation Table", font=('Helvatical bold',20), background='white', foreground='blue', anchor=CENTER)
+    # obs_heading.grid(row=0, column=0)
+    #
+    #
 
-    tree.heading('Initial Jib Length', text='Initial Jib Length')
-    tree.column("Initial Jib Length", minwidth=0, width=100, stretch=NO)
+    f = open("obs.csv", "r")
+    reader = csv.reader(f)
+    data = list(reader)
 
-    tree.heading('Post Length', text='Post Length')
-    tree.column("Post Length", minwidth=0, width=100, stretch=NO)
+    if not data:
 
-    tree.heading('Final Jib Length', text='Final Jib Length')
-    tree.column("Final Jib Length", minwidth=0, width=100, stretch=NO)
+        tree.heading('S.No', text='S.No')
+        tree.column("S.No", minwidth=0, width=35, stretch=NO)
 
-    tree.heading('Final Tie Length', text='Final Tie Length')
-    tree.column("Final Tie Length", minwidth=0, width=100, stretch=NO)
+        tree.heading('Weight', text='Weight')
+        tree.column("Weight", minwidth=0, width=50, stretch=NO)
 
-    tree.heading('Calculated Tie Length', text='Calc. Tie Length')
-    tree.column("Calculated Tie Length", minwidth=0, width=100, stretch=NO)
+        tree.heading('Initial Tie Length', text='Initial Tie Length')
+        tree.column("Initial Tie Length", minwidth=0, width=100, stretch=NO)
 
-    tree.heading('Calculated Jib Length', text='Calc. Jib Length')
-    tree.column("Calculated Jib Length", minwidth=0, width=100, stretch=NO)
+        tree.heading('Initial Jib Length', text='Initial Jib Length')
+        tree.column("Initial Jib Length", minwidth=0, width=100, stretch=NO)
 
-    tree.heading('Percentage Error Jib', text='% Error Jib')
-    tree.column("Percentage Error Jib", minwidth=0, width=100, stretch=NO)
+        tree.heading('Post Length', text='Post Length')
+        tree.column("Post Length", minwidth=0, width=100, stretch=NO)
 
-    tree.heading('Percentage Error Tie', text='% Error Tie')
-    tree.column("Percentage Error Tie", minwidth=0, width=100, stretch=NO)
+        tree.heading('Final Jib Length', text='Final Jib Length')
+        tree.column("Final Jib Length", minwidth=0, width=100, stretch=NO)
+
+        tree.heading('Final Tie Length', text='Final Tie Length')
+        tree.column("Final Tie Length", minwidth=0, width=100, stretch=NO)
+
+        tree.heading('Calculated Tie Length', text='Calc. Tie Length')
+        tree.column("Calculated Tie Length", minwidth=0, width=100, stretch=NO)
+
+        tree.heading('Calculated Jib Length', text='Calc. Jib Length')
+        tree.column("Calculated Jib Length", minwidth=0, width=100, stretch=NO)
+
+        tree.heading('Percentage Error Jib', text='% Error Jib')
+        tree.column("Percentage Error Jib", minwidth=0, width=100, stretch=NO)
+
+        tree.heading('Percentage Error Tie', text='% Error Tie')
+        tree.column("Percentage Error Tie", minwidth=0, width=100, stretch=NO)
+
+        tree.grid(row=1, column=0, sticky='nsew')
+        scrollbar = ttk.Scrollbar(main_win, orient=VERTICAL, command=tree.yview)
+        tree.configure(yscroll=scrollbar.set)
+        scrollbar.grid(row=1, column=1, sticky='ns')
+
+    else:
+        tree.heading('S.No', text='S.No')
+        tree.column("S.No", minwidth=0, width=35, stretch=NO)
+
+        tree.heading('Weight', text='Weight')
+        tree.column("Weight", minwidth=0, width=50, stretch=NO)
+
+        tree.heading('Initial Tie Length', text='Initial Tie Length')
+        tree.column("Initial Tie Length", minwidth=0, width=100, stretch=NO)
+
+        tree.heading('Initial Jib Length', text='Initial Jib Length')
+        tree.column("Initial Jib Length", minwidth=0, width=100, stretch=NO)
+
+        tree.heading('Post Length', text='Post Length')
+        tree.column("Post Length", minwidth=0, width=100, stretch=NO)
+
+        tree.heading('Final Jib Length', text='Final Jib Length')
+        tree.column("Final Jib Length", minwidth=0, width=100, stretch=NO)
+
+        tree.heading('Final Tie Length', text='Final Tie Length')
+        tree.column("Final Tie Length", minwidth=0, width=100, stretch=NO)
+
+        tree.heading('Calculated Tie Length', text='Calc. Tie Length')
+        tree.column("Calculated Tie Length", minwidth=0, width=100, stretch=NO)
+
+        tree.heading('Calculated Jib Length', text='Calc. Jib Length')
+        tree.column("Calculated Jib Length", minwidth=0, width=100, stretch=NO)
+
+        tree.heading('Percentage Error Jib', text='% Error Jib')
+        tree.column("Percentage Error Jib", minwidth=0, width=100, stretch=NO)
+
+        tree.heading('Percentage Error Tie', text='% Error Tie')
+        tree.column("Percentage Error Tie", minwidth=0, width=100, stretch=NO)
+
+        for item in data:
+            tree.insert('', END, values=item)
+
+        tree.grid(row=1, column=0, sticky='nsew')
+        scrollbar = ttk.Scrollbar(main_win, orient=VERTICAL, command=tree.yview)
+        tree.configure(yscroll=scrollbar.set)
+        scrollbar.grid(row=1, column=1, sticky='ns')
 
     # contacts = []
     # for n in range(1, 100):
@@ -207,30 +276,30 @@ def view_table():
     # for contact in contacts:
     #     tree.insert('', END, values=contact)
 
-    tree.grid(row=1, column=0, sticky='nsew')
-    scrollbar = ttk.Scrollbar(main_win, orient=VERTICAL, command=tree.yview)
-    tree.configure(yscroll=scrollbar.set)
-    scrollbar.grid(row=1, column=1, sticky='ns')
+
+    obs_table.mainloop()
 
 def add_to_table():
 
-    global s_no, tree, Comp_Trunc, Ten_Trunc, perc_jib, perc_tie
-    #f = open("obs.csv", "a")
-    #writer = csv.writer(f)
-    data = [s_no, weight.get(), initial_tie.get(), initial_jib.get(), post.get(), final_jib_reading.get(), final_tie_reading.get(), Comp_Trunc, Ten_Trunc, perc_jib, perc_tie]
-    #writer.writerow(data)
-    tree.insert('', END, values=data)
-    #f.close()
+
+    global s_no, Comp_Trunc, Ten_Trunc, perc_jib, perc_tie
+    f = open("obs.csv", "a", newline='')
+    writer = csv.writer(f)
     s_no += 1
+    data = [s_no, weight.get(), initial_tie.get(), initial_jib.get(), post.get(), final_jib_reading.get(), final_tie_reading.get(), Comp_Trunc, Ten_Trunc, perc_jib, perc_tie]
+    writer.writerow(data)
+    tree.insert('', END, values = data)
 
-
-
-s_no = 1
+    f.close()
 
 main_win = Tk()
 main_win.geometry("1024x768")
 main_win.title('Jib Crane Experiment')
 main_win.configure(background='white')
+
+global Comp_Trunc, Ten_Trunc, perc_tie, perc_jib
+Comp_Trunc, Ten_Trunc, perc_tie, perc_jib = -1,-1,-1,-1
+
 
 #main_frame = ttk.Frame(main_win, padding=10)
 main_heading = ttk.Label(main_win, text="Jib Crane Experiment", )
@@ -239,12 +308,6 @@ main_heading.configure( font=('Helvatical bold',30), padding=0)
 jib_crane_img = Canvas(main_win, height=600, width=500)
 img = ImageTk.PhotoImage(Image.open('jib_crane.jpg'))
 jib_crane_img.create_image(10, 10, anchor=NW, image=img)
-
-f = open("obs.csv", "w", newline='\n') # clearing observation table
-writer = csv.writer(f)
-writer.writerow(["S.No ", 'Weight', 'Initial Tie Length', 'Initial Jib Length', 'Post Length', 'Final Jib length', 'Final Tie Length',
-                'Calculated Tie Length', 'Calculated Jib Length', 'Percantage Error Jib', "Percentage Error Jib"])
-f.close()
 
 #btn = tkinter.Button(main_frame, text="Quit", command=main_win.destroy)
 
@@ -366,11 +429,7 @@ len_AB_label.place(x=530, y=250)
 len_AC.place(x=460, y=150)
 len_AC_label.place(x=455, y=130)
 
-perc_error_tie.place(x=550, y = 580)
-perc_error_jib.place(x=550, y = 610)
 
-compr_calc.place(x=550, y = 520)
-tens_calc.place(x=550, y = 550)
 
 final_tie_reading_label.place(x=30, y=650)
 final_tie_reading.place(x=210, y=650)
@@ -378,13 +437,143 @@ final_tie_reading.place(x=210, y=650)
 final_jib_reading_label.place(x=30, y=680)
 final_jib_reading.place(x=210, y=680)
 
-calculate_button.place(x=550,y=650)
-clear_button.place(x=660, y=650)
-reset_button.place(x=740, y=650)
-view_table.place(x=560, y = 705)
-add_table.place(x=680, y=705)
+
+perc_error_tie.place(x=590, y = 550)
+perc_error_jib.place(x=590, y = 580)
+
+compr_calc.place(x=590, y = 490)
+tens_calc.place(x=590, y = 520)
+
+calculate_button.place(x=590,y=620)
+clear_button.place(x=700, y=620)
+reset_button.place(x=780, y=620)
+#view_table.place(x=560, y = 705)
+add_table.place(x=675, y=675)
 
 #main_heading.pack()
 #main_frame.pack()
 
+
+f = open("obs.csv", "w", newline='')  # clearing observation table
+writer = csv.writer(f)
+f.close()
+
+global obs_table, tree
+s_no = 0
+columns = ("S.No", 'Weight', 'Initial Tie Length', 'Initial Jib Length', 'Post Length', 'Final Jib Length', 'Final Tie Length',
+            'Calculated Tie Length', 'Calculated Jib Length', 'Percentage Error Jib', "Percentage Error Tie")
+
+obs_table = Tk()
+
+global tree
+
+obs_table.title('Observation Table')
+obs_table.geometry("988x266")
+obs_table.configure(background='white')
+
+tree = ttk.Treeview(obs_table, columns=columns, show='headings')
+
+obs_heading = Label(obs_table, text="Observation Table", font=('Helvatical bold', 20), background='white',
+                    foreground='blue', anchor=CENTER)
+obs_heading.grid(row=0, column=0)
+
+f = open("obs.csv", "r")
+reader = csv.reader(f)
+data = list(reader)
+
+if not data:
+
+    tree.heading('S.No', text='S.No')
+    tree.column("S.No", minwidth=0, width=35, stretch=NO)
+
+    tree.heading('Weight', text='Weight')
+    tree.column("Weight", minwidth=0, width=50, stretch=NO)
+
+    tree.heading('Initial Tie Length', text='Initial Tie Length')
+    tree.column("Initial Tie Length", minwidth=0, width=100, stretch=NO)
+
+    tree.heading('Initial Jib Length', text='Initial Jib Length')
+    tree.column("Initial Jib Length", minwidth=0, width=100, stretch=NO)
+
+    tree.heading('Post Length', text='Post Length')
+    tree.column("Post Length", minwidth=0, width=100, stretch=NO)
+
+    tree.heading('Final Jib Length', text='Final Jib Length')
+    tree.column("Final Jib Length", minwidth=0, width=100, stretch=NO)
+
+    tree.heading('Final Tie Length', text='Final Tie Length')
+    tree.column("Final Tie Length", minwidth=0, width=100, stretch=NO)
+
+    tree.heading('Calculated Tie Length', text='Calc. Tie Length')
+    tree.column("Calculated Tie Length", minwidth=0, width=100, stretch=NO)
+
+    tree.heading('Calculated Jib Length', text='Calc. Jib Length')
+    tree.column("Calculated Jib Length", minwidth=0, width=100, stretch=NO)
+
+    tree.heading('Percentage Error Jib', text='% Error Jib')
+    tree.column("Percentage Error Jib", minwidth=0, width=100, stretch=NO)
+
+    tree.heading('Percentage Error Tie', text='% Error Tie')
+    tree.column("Percentage Error Tie", minwidth=0, width=100, stretch=NO)
+
+    tree.grid(row=1, column=0, sticky='nsew')
+    scrollbar = ttk.Scrollbar(obs_table, orient=VERTICAL, command=tree.yview)
+    tree.configure(yscroll=scrollbar.set)
+    scrollbar.grid(row=1, column=1, sticky='ns')
+
+else:
+    tree.heading('S.No', text='S.No')
+    tree.column("S.No", minwidth=0, width=35, stretch=NO)
+
+    tree.heading('Weight', text='Weight')
+    tree.column("Weight", minwidth=0, width=50, stretch=NO)
+
+    tree.heading('Initial Tie Length', text='Initial Tie Length')
+    tree.column("Initial Tie Length", minwidth=0, width=100, stretch=NO)
+
+    tree.heading('Initial Jib Length', text='Initial Jib Length')
+    tree.column("Initial Jib Length", minwidth=0, width=100, stretch=NO)
+
+    tree.heading('Post Length', text='Post Length')
+    tree.column("Post Length", minwidth=0, width=100, stretch=NO)
+
+    tree.heading('Final Jib Length', text='Final Jib Length')
+    tree.column("Final Jib Length", minwidth=0, width=100, stretch=NO)
+
+    tree.heading('Final Tie Length', text='Final Tie Length')
+    tree.column("Final Tie Length", minwidth=0, width=100, stretch=NO)
+
+    tree.heading('Calculated Tie Length', text='Calc. Tie Length')
+    tree.column("Calculated Tie Length", minwidth=0, width=100, stretch=NO)
+
+    tree.heading('Calculated Jib Length', text='Calc. Jib Length')
+    tree.column("Calculated Jib Length", minwidth=0, width=100, stretch=NO)
+
+    tree.heading('Percentage Error Jib', text='% Error Jib')
+    tree.column("Percentage Error Jib", minwidth=0, width=100, stretch=NO)
+
+    tree.heading('Percentage Error Tie', text='% Error Tie')
+    tree.column("Percentage Error Tie", minwidth=0, width=100, stretch=NO)
+
+    for item in data:
+        tree.insert('', END, values=item)
+
+    tree.grid(row=1, column=0, sticky='nsew')
+    scrollbar = ttk.Scrollbar(main_win, orient=VERTICAL, command=tree.yview)
+    tree.configure(yscroll=scrollbar.set)
+    scrollbar.grid(row=1, column=1, sticky='ns')
+
+# contacts = []
+# for n in range(1, 100):
+#     contacts.append((f'first {n}', f'last {n}', f'email{n}@example.com'))
+#
+# for contact in contacts:
+#     tree.insert('', END, values=contact)
+
+
+
+obs_table.mainloop()
+
 main_win.mainloop()
+
+
