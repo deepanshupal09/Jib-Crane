@@ -65,15 +65,18 @@ def turtle_diagram():
     turtle.forward(AC * 5)
     turtle.left(180-beta(AB,BC,AC))
     turtle.done()
+    turtle.bye()
+    turtle.mainloop()
 
 def calc():
 
 
-    global AB
-    global AC
-    global BC
-
     try:
+        global AB
+        global AC
+        global BC
+
+
         BC = float(post.get())
         AB = float(len_AB.get())
         AC = float(len_AC.get())
@@ -135,11 +138,13 @@ def calc():
         # print(perc_tie)
         # print(perc_jib)
 
-        # turtle_diagram()
+        turtle_diagram()
         # time.sleep(3)
-        # turtle.bye()
-    except:
-        messagebox.showerror("ERROR", "Invalid Input")
+        turtle.bye()
+        turtle.mainloop()
+    except turtle.Terminator:
+        pass
+
 
 
 def clear():
